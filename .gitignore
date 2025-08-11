@@ -1,0 +1,27 @@
+# === Scala / sbt ===
+target/
+project/target/
+project/project/
+lib_managed/
+src_managed/
+boot/
+
+# === Metals (Scala extension pour VSCode) ===
+.bloop/
+.metals/
+.bsp/
+.worksheet/
+
+# === VSCode ===
+.vscode/
+
+# === Cache / Logs / OS ===
+*.log
+*.class
+*.tmp
+.DS_Store
+.cache/
+.sbt_history
+
+# === Autres potentiels (si tu utilises coursier) ===
+coursier
