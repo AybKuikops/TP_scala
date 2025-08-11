@@ -55,12 +55,47 @@ Here is the organization of the project files and folders:
 
 ```
 
+## Usage
 
+### Run the Program
 
+To execute the data processing pipeline:
 
+```bash
+sbt run
+```
 
+By default, the application will:
 
+- **Read** the input file from:  
+  `data/sale_data.csv`
+- **Perform the following operations:**
+  - Remove rows with null or missing values
+  - Calculate total revenue by product category
+  - Identify the top 5 products generating the highest revenue
+  - Compute average revenue per month
+- **Save** the results into the `output/` directory:
+  - `output/clean_data/` — cleaned dataset
+  - `output/sales_by_category/` — revenue by category
+  - `output/top_5_OrderLines/` — top 5 products
+  - `output/avg_sales_month/` — average monthly revenue
+  - `output/Missing_values_col/` — columns with missing values
 
+---
+
+### Run Unit Tests
+
+Unit tests are located in:  
+`src/test/scala/app/TestProcessor.scala`
+
+To execute the tests:
+
+```bash
+sbt test
+```
+
+These tests validate the core data transformation functions defined in:  
+`src/main/scala/models/DataProcessing.scala`
 
 
 
