@@ -13,7 +13,7 @@ class DataProcessing(spark: SparkSession) {
     // Read the CSV file into a DataFrame
     val df = spark.read
       .option("header", "true") // "true" cuz the CSV has a header row
-      .option("inferSchema", "true") 
+      .option("inferSchema", "true") // detect auto the types of values in columns
       .csv(path) 
 
     // always specify schema when reading files (parquet, json or csv) into a DataFrame, so we'll use saledata model for the validation
@@ -54,6 +54,7 @@ class DataProcessing(spark: SparkSession) {
 
   def get_total_sales_category(df: Dataset[SaleData], save_data: Boolean = false): DataFrame =  {
     
+    // group values by product type and calculate the sum of the revenues 
     val salesByCategory = df.groupBy("PRODUCTLINE")
       .agg(sum("SALES").alias("total_sales"))
       .orderBy(desc("total_sales"))
@@ -66,6 +67,7 @@ class DataProcessing(spark: SparkSession) {
 
   def get_top5_products(df: Dataset[SaleData], save_data: Boolean = false): DataFrame =  {
     
+    // use the previous fct to get data grouped by products
     val salesByCategory = this.get_total_sales_category(df)
     val top5OrderLines = salesByCategory.limit(5)
     // top5OrderLines.show()
@@ -76,7 +78,7 @@ class DataProcessing(spark: SparkSession) {
   }
 
   def get_avg_sales_month(df: Dataset[SaleData], save_data: Boolean = false): DataFrame =  {
-    
+    // group data by month and sum the revenus of each month
     val AvgSalesMonth = df.groupBy("MONTH_ID")
         .agg(avg("SALES").alias("avg_sales"))
         .orderBy(desc("avg_sales")) 

@@ -9,15 +9,19 @@ import com.univocity.parsers.common.DataProcessingException
 import org.scalatest.BeforeAndAfterAll
 
 
-class TestProcessor extends AnyFunSuite {
-  
+class TestProcessor extends AnyFunSuite with BeforeAndAfterAll {
+  // create spark session 
   val spark: SparkSession = SparkSession.builder()
     .appName("UnitTest")
     .master("local[*]")
     .getOrCreate()
 
   import spark.implicits._
+  // override def beforeAll(): Unit = {
+  //   super.beforeAll()
+  // }
 
+  // cerate data with to test the different functions
   val dataSample = Seq(
     SaleData(Some(10107), Some(30), Some(95.7), Some(2), Some(2871.0), Some("2/24/2003 0:00"), Some("Shipped"), Some(1), Some(2), Some(2003), Some("Motorcycles"), Some(95), Some("S10_1678"), Some("Land of Toys Inc."), Some("2125557818"), Some("897 Long Airport Avenue"), None, Some("NYC"), Some("NY"), Some("10022"), Some("USA"), Some("NA"), Some("Yu"), Some("Kwai"), Some("Small")),
 
@@ -30,11 +34,13 @@ class TestProcessor extends AnyFunSuite {
     SaleData(Some(10150), Some(50), Some(90.0), Some(1), Some(4500.0), Some("9/5/2003 0:00"), Some("Shipped"), Some(3), Some(9), Some(2003), Some("Motorcycles"), Some(95), Some("S10_1678"), Some("New Customer"), Some("1234567890"), Some("123 Some St"), None, Some("City"), Some("ST"), Some("12345"), Some("USA"), Some("NA"), Some("Smith"), Some("John"), Some("Large"))
   )
 
-
+  // convert the data to dataset 
   val test_data: Dataset[SaleData] = spark.createDataset(dataSample)
+  // create a data processing instance to test the functions
   val data_processor = new DataProcessing(spark)
   val df_clean = data_processor.drop_na(test_data)
 
+  // perform the first test for drop na values
   test("drop_na should remove rows containing nulls in any column") {
   assert(df_clean.count() == 0)
   }
@@ -46,8 +52,16 @@ class TestProcessor extends AnyFunSuite {
   ).toDF("PRODUCTLINE", "total_sales")
   val expectedCollect = df_expected.collect()
   val actualCollect = df_out.collect()
+  // peroform the second test for group data by product and sul the revenues for each one
   test("get_total_sales_category should group data by category and calculate the total sales per prod") {
   assert(expectedCollect.sameElements(actualCollect), "DataFrames are not equal!")
   }
+  override def afterAll(): Unit = {
+    if (spark != null) {
+      spark.stop()
+    }
+    super.afterAll()
+  }
+
 }
 
