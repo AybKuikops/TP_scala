@@ -43,7 +43,7 @@ class DataProcessing(spark: SparkSession) {
   def drop_na(df: Dataset[SaleData], save_data:Boolean = false): Dataset[SaleData] = {
     // Drop rows with NULL values
     import spark.implicits._  
-    val df_clean = df.na.drop("ORDERNUMBER").as[SaleData] // drop only nan values for col ordernumber 
+    val df_clean = df.na.drop(Seq("ORDERNUMBER")).as[SaleData] // drop only nan values for col ordernumber 
     println(s"size after droping rows with missing values : ${df_clean.count()} rows")
     
     if (save_data) {

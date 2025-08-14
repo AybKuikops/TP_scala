@@ -29,9 +29,12 @@ class TestProcessor extends AnyFunSuite with BeforeAndAfterAll {
 
     SaleData(Some(10134), Some(41), Some(94.74), Some(2), Some(2300.0), Some("7/1/2003 0:00"), Some("Shipped"), Some(3), Some(7), Some(2003), Some("Classic Cars"), Some(95), Some("S10_1678"), Some("Lyon Souveniers"), Some("+33 1 46 62 7555"), Some("27 rue du Colonel Pierre Avia"), None, Some("Paris"), None, Some("75508"), Some("France"), Some("EMEA"), Some("Da Cunha"), Some("Daniel"), Some("Medium")),
 
-    SaleData(Some(10145), Some(45), Some(83.26), Some(6), Some(3746.7), Some("8/25/2003 0:00"), Some("Shipped"), Some(3), Some(8), Some(2003), Some("Classic Cars"), Some(95), Some("S10_1678"), Some("Toys4GrownUps.com"), Some("6265557265"), Some("78934 Hillside Dr."), None, Some("Pasadena"), Some("CA"), Some("90003"), Some("USA"), Some("NA"), Some("Young"), Some("Julie"), Some("Medium")),
+    SaleData(None, Some(45), Some(83.26), Some(6), Some(3746.7), Some("8/25/2003 0:00"), Some("Shipped"), Some(3), Some(8), Some(2003), Some("Classic Cars"), Some(95), Some("S10_1678"), Some("Toys4GrownUps.com"), Some("6265557265"), Some("78934 Hillside Dr."), None, Some("Pasadena"), Some("CA"), Some("90003"), Some("USA"), Some("NA"), Some("Young"), Some("Julie"), Some("Medium")),
 
-    SaleData(Some(10150), Some(50), Some(90.0), Some(1), Some(4500.0), Some("9/5/2003 0:00"), Some("Shipped"), Some(3), Some(9), Some(2003), Some("Motorcycles"), Some(95), Some("S10_1678"), Some("New Customer"), Some("1234567890"), Some("123 Some St"), None, Some("City"), Some("ST"), Some("12345"), Some("USA"), Some("NA"), Some("Smith"), Some("John"), Some("Large"))
+    SaleData(None, Some(50), Some(90.0), Some(1), Some(4500.0), Some("9/5/2003 0:00"), Some("Shipped"), Some(3), Some(9), Some(2003), Some("Motorcycles"), Some(95), Some("S10_1678"), Some("New Customer"), Some("1234567890"), Some("123 Some St"), None, Some("City"), Some("ST"), Some("12345"), Some("USA"), Some("NA"), Some("Smith"), Some("John"), Some("Large"))
+
+    // SaleData(None, Some(50), Some(90.0), Some(1), Some(4500.0), Some("9/5/2003 0:00"), Some("Shipped"), Some(3), Some(9), Some(2003), Some("Motorcycles"), Some(95), Some("S10_1678"), Some("New Customer"), Some("1234567890"), Some("123 Some St"), None, Some("City"), Some("ST"), Some("12345"), Some("USA"), Some("NA"), Some("Smith"), Some("John"), Some("Large"))
+
   )
 
   // convert the data to dataset 
@@ -42,7 +45,7 @@ class TestProcessor extends AnyFunSuite with BeforeAndAfterAll {
 
   // perform the first test for drop na values
   test("drop_na should remove rows containing nulls in any column") {
-  assert(df_clean.count() == 0)
+  assert(df_clean.count() == 3)
   }
 
   val df_out = data_processor.get_total_sales_category(test_data)
@@ -52,6 +55,7 @@ class TestProcessor extends AnyFunSuite with BeforeAndAfterAll {
   ).toDF("PRODUCTLINE", "total_sales")
   val expectedCollect = df_expected.collect()
   val actualCollect = df_out.collect()
+
   // peroform the second test for group data by product and sul the revenues for each one
   test("get_total_sales_category should group data by category and calculate the total sales per prod") {
   assert(expectedCollect.sameElements(actualCollect), "DataFrames are not equal!")
