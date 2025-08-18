@@ -5,6 +5,9 @@ version := "0.1"
 scalaVersion := "2.13.16"
 
 
+libraryDependencies += "com.nrinaudo" %% "kantan.csv" % "0.6.1"
+
+
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % "3.4.1"   
 )

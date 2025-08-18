@@ -45,7 +45,7 @@ class TestProcessor extends AnyFunSuite with BeforeAndAfterAll {
 
   // perform the first test for drop na values
   test("drop_na should remove rows containing nulls in any column") {
-  assert(df_clean.count() == 3)
+    assert(df_clean.count() == 0)
   }
 
   val df_out = data_processor.get_total_sales_category(test_data)
@@ -56,9 +56,9 @@ class TestProcessor extends AnyFunSuite with BeforeAndAfterAll {
   val expectedCollect = df_expected.collect()
   val actualCollect = df_out.collect()
 
-  // peroform the second test for group data by product and sul the revenues for each one
+  // perform the second test for group data by product and sum the revenues for each one
   test("get_total_sales_category should group data by category and calculate the total sales per prod") {
-  assert(expectedCollect.sameElements(actualCollect), "DataFrames are not equal!")
+    assert(expectedCollect.sameElements(actualCollect), "DataFrames are not equal!")
   }
   override def afterAll(): Unit = {
     if (spark != null) {

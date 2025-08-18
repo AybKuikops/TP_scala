@@ -5,6 +5,10 @@ import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.functions._
 
+import kantan.csv._
+import kantan.csv.ops._
+import java.io.File
+
 class DataProcessing(spark: SparkSession) {
   // first i put spark session here once an object is created but this will create a pb cuz each time we have new object we will 
   // create a new session so instead we ill create one session in the object and pass it as param for the class
@@ -26,13 +30,18 @@ class DataProcessing(spark: SparkSession) {
     ds // ds is a dataset so the items are objects of the case class saledata, (scala types)
   }
 
+  // def read_csv_2(path: String): List[SaleData] = {
+  //   val reader = new File("sales.csv").asCsvReader[SaleData](rfc.withHeader)
+      
+  //   } pb: compiler doenst know how to trasform columns en saleData a Headerdecoder must be provided
+
   def count_na(df: Dataset[SaleData], save_data: Boolean = false): Unit = {
     // Count null values for each column
     val nullCounts = df.columns.map { colName =>
       colName -> df.filter(col(colName).isNull).count()
     }.toMap
 
-    import spark.implicits._  // Needed for .toDF
+    import spark.implicits._  // Needed for .toDF (important if we want to convert to spark ds or for implicits encoders so spark can understand and stock the ds)
     val nullCountsDF = nullCounts.toSeq.toDF("column", "null_count")
 
     if (save_data) {
